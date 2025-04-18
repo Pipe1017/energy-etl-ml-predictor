@@ -41,30 +41,33 @@ Expande aquí la descripción inicial. Proporciona más detalles sobre el propó
 * **Orquestación:** Airflow (si aplica)
 * **Almacenamiento:** MinIO (si aplica para Docker)
 
-## Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
-├── airflow/         # Archivos de configuración/DAGs de Airflow (si aplica)
-├── backend/         # Código fuente del backend FastAPI (¡Ajusta según tu estructura!)
-│   ├── app/         # Lógica principal de la aplicación
-│   │   ├── api/     # Endpoints de la API
-│   │   ├── core/    # Configuración, etc.
-│   │   └── services/ # Lógica de negocio, interacción con modelos
-│   ├── models_ml/   # Módulos relacionados con la carga/uso de modelos ML (puede estar dentro de app/)
-│   └── main.py      # Punto de entrada de FastAPI
-├── frontend/        # Código fuente del frontend React/Vite (si aplica)
-├── Models/          # Notebooks de entrenamiento, scripts auxiliares para ML
-│   ├── modelo_demanda_lstm.ipynb # Notebook principal de entrenamiento
-│   ├── prueba_modelo.ipynb       # Notebook de pruebas
-│   └── (otros notebooks/scripts...)
-├── data/            # Datos crudos o procesados (¡Asegúrate que no se versionen si son grandes!)
-├── tests/           # Pruebas unitarias/integración
-├── .env.example     # Archivo de ejemplo para variables de entorno
-├── .gitignore       # Archivo de Git ignore
-├── docker-compose.yml # Definición de servicios Docker
-├── Dockerfile       # Dockerfile para construir la imagen (o varios)
-├── requirements.txt # Dependencias de Python
-├── README.md        # Este archivo
-└── ...              # Otros archivos de configuración (pyproject.toml, etc.)
+```bash
+├── airflow/              # DAGs y configuración de Airflow
+├── backend/              # Código fuente del backend (FastAPI)
+│   ├── app/              # Lógica principal de la app
+│   │   ├── api/          # Endpoints
+│   │   ├── core/         # Configuración
+│   │   └── services/     # Carga de modelos, lógica de negocio
+│   ├── models_ml/        # Módulos auxiliares de ML
+│   └── main.py           # Punto de entrada FastAPI
+├── frontend/             # Código fuente del frontend (React/Vite)
+├── Models/               # Notebooks de entrenamiento/pruebas
+│   ├── modelo_demanda_lstm.ipynb
+│   ├── prueba_modelo.ipynb
+│   └── ...
+├── data/                 # Datos crudos/procesados (¡No versionar si son pesados!)
+├── tests/                # Pruebas unitarias/integración
+├── .env.example          # Variables de entorno de ejemplo
+├── .gitignore
+├── docker-compose.yml
+├── Dockerfile
+├── requirements.txt
+├── README.md
+└── ...                  # Otros archivos como pyproject.toml, etc.
+
+
 
 
 *(¡Importante! Ajusta la estructura de arriba para que coincida exactamente con tu proyecto real)*
