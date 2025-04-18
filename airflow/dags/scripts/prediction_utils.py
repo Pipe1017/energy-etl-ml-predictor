@@ -115,6 +115,11 @@ def create_prediction_output(
         periods=len(preds),
         freq='H'
     )
+    
+    # Eliminar primeras 6 predicciones y sus timestamps
+    preds = preds[6:]
+    future_ts = future_ts[6:]
+    
     if len(future_ts) != len(preds):
         raise ValueError("Mismatch preds/timestamps.")
 

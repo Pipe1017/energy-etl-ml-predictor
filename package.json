@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@types/node": "^22.14.1",
+    "@types/react": "^19.1.2",
+    "@types/react-router-dom": "^5.3.3",
+    "react-router-dom": "^6.30.0"
+  }
+}

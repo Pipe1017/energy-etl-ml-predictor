@@ -1,5 +1,5 @@
 # ──────────────────────────────
-#  ANCHOR: Config común Airflow
+#  ANCHOR: Config común Airflow  AMBIENTEEEEEEEEEEEEEEEE LOCAAAAAAAAAAAAAAAAAL
 # ──────────────────────────────
 x-airflow-common: &airflow-common
   build:
@@ -43,15 +43,15 @@ x-airflow-common: &airflow-common
 # ──────────────
 services:
 
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    container_name: cloudflared_tunnel
-    command: tunnel run --token ${CLOUDFLARED_TOKEN}
-    restart: unless-stopped
-    networks: [app-net]
-    depends_on:
-      - backend
-      - frontend
+   #cloudflared:
+   #  image: cloudflare/cloudflared:latest
+   #  container_name: cloudflared_tunnel
+   #  command: tunnel run --token <TOKEN>
+   #  restart: unless-stopped
+   #  networks: [app-net]
+   #  depends_on:
+   #     - backend
+   #     - frontend
 
   frontend:
     container_name: frontend_app

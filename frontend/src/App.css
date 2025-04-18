@@ -1,63 +1,229 @@
 /* frontend/src/App.css */
+/* ===================== */
+/* CORREGIDO: Eliminado el bloque duplicado y ajustada la lógica de main-content */
 
-/* Reseteo básico y fuente base */
+:root {
+  /* Variables CSS para colores y tamaños */
+  --dark-bg: #1a1a1a;
+  --darker-bg: #121212;
+  --accent: #2a9d8f; /* Un color de acento */
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --sidebar-width: 280px; /* Ancho del sidebar definido como variable */
+}
+
+/* Estilo base para toda la aplicación */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #eef2f7; /* Fondo suave general */
-  color: #333; /* Color de texto por defecto */
+  font-family: sans-serif; /* Considera usar una fuente más específica */
+  background-color: var(--dark-bg); /* Fondo base */
 }
 
-/* Contenedor principal de la aplicación en index.html o similar */
-#root {
-  /* Mantenemos el padding general, pero quitamos el centrado de texto
-     para que los componentes controlen su alineación */
-  max-width: 1280px;
-  margin: 0 auto; /* Centra el contenido horizontalmente */
-  padding: 2rem; /* Espaciado alrededor del contenido principal */
-  /* text-align: center; <-- Eliminado */
+.dark-theme {
+  background-color: var(--dark-bg);
+  color: var(--text-primary);
+  min-height: 100vh;
 }
 
-/* Contenedor específico dentro de App.tsx */
 .app-container {
-  width: 100%; /* Ocupa el ancho disponible dentro de #root */
+  display: flex; /* Para layout sidebar/main */
+}
+
+/* --- Estilos del Sidebar --- */
+.sidebar {
+  background-color: var(--darker-bg); /* Fondo más oscuro para el sidebar */
+  color: var(--text-primary);
+  height: 100vh; /* Ocupa toda la altura */
+  position: fixed; /* Fijo en la pantalla */
+  left: 0;
+  top: 0;
+  width: var(--sidebar-width); /* Ancho desde la variable */
+  padding: 1rem;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+  overflow-y: auto; /* Scroll si el contenido es largo */
+  z-index: 100; /* Por encima del contenido si es necesario */
+
+  /* CORREGIDO: Estado inicial y transición para la animación */
+  transform: translateX(0); /* Estado inicial: visible */
+  transition: transform 0.3s ease; /* Animación suave para mostrar/ocultar */
+}
+
+/* CORREGIDO: Estado colapsado (oculto) */
+.sidebar.collapsed {
+  /* Mueve el sidebar fuera de la vista hacia la izquierda */
+  transform: translateX(calc(var(--sidebar-width) * -1));
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem; /* Añadido margen inferior */
+  border-bottom: 1px solid #333; /* Separador */
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 1.4em;
+    white-space: nowrap;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 1.5em; /* Tamaño del icono/botón */
+  padding: 0.5rem; /* Área de click más grande */
+  line-height: 1; /* Ajuste de línea */
+}
+
+.sidebar-section {
+  margin: 1.5rem 0;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.75rem 0.5rem; /* Ajuste de padding */
+  border-radius: 4px;
+  transition: background-color 0.2s ease; /* Transición hover */
+}
+
+.section-header:hover {
+  background-color: #2a2a2a; /* Fondo al pasar el ratón */
+}
+
+.section-header h3 {
+    margin: 0;
+    font-size: 1.1em;
+    white-space: nowrap;
+}
+
+.section-header span { /* Estilo para los iconos de flecha (si los usas) */
+    font-size: 0.8em;
+    transition: transform 0.2s ease;
+}
+
+/* Rotar flecha si está expandido (requiere lógica en Sidebar.tsx para añadir clase) */
+/* .section-header.expanded span {
+     transform: rotate(90deg);
+   } */
+
+.subsection-links {
   display: flex;
   flex-direction: column;
-  gap: 25px; /* Espacio vertical entre secciones (Welcome, Chart, Config) */
+  margin-top: 0.5rem; /* Espacio sobre los links */
+  margin-left: 1rem; /* Indentación */
+  padding-left: 1rem;
+  border-left: 2px solid var(--accent); /* Línea lateral decorativa */
 }
 
-/* Estilo general para las "tarjetas" o secciones */
-.card {
-  background-color: #ffffff;
+.subsection-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 0.6rem 0.5rem; /* Padding de los links */
+  margin-bottom: 0.25rem; /* Espacio entre links */
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.subsection-links a:hover {
+  background-color: #2a2a2a;
+  color: var(--text-primary);
+}
+
+/* Estilo para link activo (si usas NavLink de react-router-dom) */
+.subsection-links a.active {
+  background-color: var(--accent);
+  color: #fff; /* Texto blanco sobre el color de acento */
+  font-weight: bold;
+}
+
+
+/* --- Estilos del Contenido Principal --- */
+/* CORREGIDO: Lógica de margen/ancho ajustada */
+.main-content {
+  /* Estado por defecto: Sidebar COLAPSADO/OCULTO */
+  margin-left: 0; /* Sin margen izquierdo */
+  width: 100%; /* Ocupa todo el ancho disponible */
+  padding: 2rem; /* Padding interno */
+  /* Transición para que el cambio de margen/ancho sea suave */
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  overflow-y: auto; /* Scroll vertical si el contenido es muy largo */
+  min-height: 100vh; /* Asegura que ocupe al menos toda la altura */
+}
+
+/* CORREGIDO: Estado cuando el Sidebar está ABIERTO */
+.main-content.sidebar-open {
+  /* Aplicamos margen izquierdo igual al ancho del sidebar */
+  margin-left: var(--sidebar-width);
+  /* Reducimos el ancho para dejar espacio al sidebar */
+  width: calc(100% - var(--sidebar-width));
+}
+
+
+/* --- Otros Estilos (Gráficos, Placeholders, etc.) --- */
+.chart-container {
+  background-color: var(--darker-bg);
+  border: 1px solid #333;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 25px; /* Un padding consistente para las tarjetas */
-  border: 1px solid #e9ecef; /* Borde sutil opcional */
+  padding: 1.5rem; /* Padding ajustado */
+  margin-top: 1.5rem; /* Espacio sobre el gráfico */
+  max-width: 100%; /* Evita desbordamiento horizontal */
+  overflow-x: auto; /* Scroll horizontal si el gráfico es muy ancho */
 }
 
-/* Separador visual entre secciones */
-.divider {
-    border: 0;
-    height: 1px;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
-    margin: 10px 0; /* Ajusta el espacio vertical del separador */
+.date-filters {
+  background-color: #2a2a2a;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem; /* Espacio bajo los filtros */
+  display: flex; /* Para alinear elementos de filtro */
+  gap: 1rem; /* Espacio entre elementos de filtro */
+  flex-wrap: wrap; /* Permite que los filtros pasen a la siguiente línea */
 }
 
-/* Footer */
-.app-footer {
-    margin-top: 30px;
-    padding-top: 15px;
-    border-top: 1px solid #dee2e6; /* Línea superior para el footer */
-    text-align: center;
-    font-size: 0.85em;
-    color: #6c757d;
+.placeholder-page {
+  background-color: var(--darker-bg);
+  padding: 3rem 2rem; /* Padding ajustado */
+  border-radius: 8px;
+  border: 1px solid #333;
+  text-align: center;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column; /* Alinea título y descripción verticalmente */
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary); /* Color de texto base para placeholder */
+  margin: 2rem; /* Margen alrededor del placeholder */
 }
 
+.placeholder-page h2 {
+    color: var(--text-primary); /* Título más prominente */
+    margin-bottom: 1rem;
+}
 
-/* --- Estilos Eliminados (ya no se usan en App.tsx) --- */
-/*
-.logo
+.placeholder-page p {
+    max-width: 600px; /* Limita el ancho del texto */
+    line-height: 1.6; /* Mejora legibilidad */
+}
+
+.welcome-message {
+  text-align: center;
+  padding: 3rem 2rem; /* Padding similar al placeholder */
+  margin: 2rem;
+  background-color: var(--darker-bg);
+  border-radius: 8px;
+  border: 1px solid #333;
+  color: var(--text-secondary);
+}
+
+.welcome-message h1 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}

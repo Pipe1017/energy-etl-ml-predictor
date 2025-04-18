@@ -69,8 +69,8 @@ def xm_demanda_dag_desacoplado():
         función de extracción de la API. Devuelve un DataFrame de Pandas.
         """
         now = pendulum.now("America/Bogota")
-        fecha_ayer = now.date() - timedelta(days=10)
-        fecha_inicio_rango = fecha_ayer - timedelta(days=3650)
+        fecha_ayer = now.date() - timedelta(days=0)
+        fecha_inicio_rango = fecha_ayer - timedelta(days=15)
 
         logging.info(f"Task [extraer_datos]: Extrayendo para {fecha_inicio_rango} a {fecha_ayer}")
         df_raw = extraer_demanda(fecha_inicio_rango, fecha_ayer)
