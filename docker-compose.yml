@@ -1,0 +1,198 @@
+# ──────────────────────────────
+#  ANCHOR: Config común Airflow
+# ──────────────────────────────
+x-airflow-common: &airflow-common
+  build:
+    context: ./airflow
+    args:
+      AIRFLOW_IMAGE_NAME: apache/airflow:2.8.1-python3.11
+  # image: "${AIRFLOW_IMAGE_NAME:-apache/airflow:2.8.1}"
+  # image: apache/airflow:2.8.1-python3.11
+
+  environment:
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: >-
+      postgresql+psycopg2://${POSTGRES_AIRFLOW_USER}:${POSTGRES_AIRFLOW_PASSWORD}@airflow-postgres:5432/${POSTGRES_AIRFLOW_DB}
+    AIRFLOW__WEBSERVER__SECRET_KEY: "${AIRFLOW__WEBSERVER__SECRET_KEY}"
+    AIRFLOW_CONN_APP_POSTGRES: >-
+      postgresql://${POSTGRES_APP_USER}:${POSTGRES_APP_PASSWORD}@app-db:5432/${POSTGRES_APP_DB}
+    AIRFLOW_CONN_APP_MINIO: >-
+      s3://${MINIO_ROOT_USER}:${MINIO_ROOT_PASSWORD}@minio:${MINIO_API_PORT:-9000}?host=http://minio:${MINIO_API_PORT:-9000}
+
+  volumes:
+    - ./airflow/dags:/opt/airflow/dags
+    - ./airflow/logs:/opt/airflow/logs
+    - ./airflow/plugins:/opt/airflow/plugins
+
+  networks:
+    - app-net
+
+  #user: "${AIRFLOW_UID:-50000}"
+
+  depends_on:
+    airflow-postgres:
+      condition: service_healthy
+    app-db:
+      condition: service_healthy
+    minio:
+      condition: service_healthy
+
+# ──────────────
+#  SERVICES
+# ──────────────
+services:
+
+  # cloudflared:
+  #   image: cloudflare/cloudflared:latest
+  #   container_name: cloudflared_tunnel
+  #   command: tunnel run --token <TOKEN>
+  #   restart: unless-stopped
+  #   networks: [app-net]
+  #   depends_on:
+  #     - backend
+  #     - frontend
+
+  frontend:
+    container_name: frontend_app
+    build:
+      context: ./frontend
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"
+    networks: [app-net]
+    depends_on: [backend]
+    restart: unless-stopped
+
+  backend:
+    container_name: backend_app
+    build:
+      context: ./backend
+    environment:
+      POSTGRES_APP_USER: ${POSTGRES_APP_USER}
+      POSTGRES_APP_PASSWORD: ${POSTGRES_APP_PASSWORD}
+      POSTGRES_APP_DB: ${POSTGRES_APP_DB}
+      POSTGRES_APP_HOST: app-db
+      POSTGRES_APP_PORT: 5432
+      MINIO_ENDPOINT_URL: http://minio:${MINIO_API_PORT:-9000}
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME}
+      TEST_VAR: "${TEST_VAR}"
+      FRONTEND_PORT: ${FRONTEND_PORT:-5173}
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - app-net
+    depends_on:
+      app-db:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  app-db:
+    container_name: app_postgres_db
+    image: postgres:15
+    environment:
+      POSTGRES_USER: "${POSTGRES_APP_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_APP_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_APP_DB}"
+      TEST_VAR: "${TEST_VAR}"
+    volumes:
+      - app_db_data:/var/lib/postgresql/data
+    networks: [app-net]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_APP_USER} -d ${POSTGRES_APP_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+
+  minio:
+    container_name: minio_storage
+    image: minio/minio:latest
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ROOT_USER}"
+      MINIO_ROOT_PASSWORD: "${MINIO_ROOT_PASSWORD}"
+      TEST_VAR: "${TEST_VAR}"
+    command: server /data --console-address ":9001"
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    networks: [app-net]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  airflow-postgres:
+    container_name: airflow_postgres_db
+    image: postgres:15
+    environment:
+      POSTGRES_USER: "${POSTGRES_AIRFLOW_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_AIRFLOW_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_AIRFLOW_DB}"
+    volumes:
+      - airflow_db_data:/var/lib/postgresql/data
+    networks: [app-net]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_AIRFLOW_USER} -d ${POSTGRES_AIRFLOW_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    ports:
+      - "5433:5433"
+
+  airflow-webserver:
+    <<: *airflow-common
+    container_name: airflow_webserver
+    command: bash -c "airflow db upgrade && airflow webserver"
+    ports:
+      - "${AIRFLOW_WEB_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+  airflow-scheduler:
+    <<: *airflow-common
+    container_name: airflow_scheduler
+    command: bash -c "airflow db upgrade && airflow scheduler"
+    healthcheck:
+      test: ["CMD", "airflow", "jobs", "check", "--job-type", "SchedulerJob", "--limit", "1"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+# ──────────────
+#  VOLUMES / NETWORKS
+# ──────────────
+volumes:
+  app_db_data:
+  minio_data:
+  airflow_db_data:
+
+networks:
+  app-net:
+    driver: bridge

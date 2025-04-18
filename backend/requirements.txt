@@ -1,0 +1,60 @@
+# backend/requirements.txt
+
+################################
+#  Dependencias Principales  #
+################################
+fastapi==0.115.12              # Framework principal
+uvicorn[standard]==0.34.1      # Servidor ASGI
+starlette==0.46.2              # Soporte para FastAPI
+pydantic==2.11.3               # Validación de datos
+pydantic_core==2.33.1          # Componente base de Pydantic
+python-dateutil==2.9.0.post0   # Manipulación de fechas (requerido por pandas)
+pytz==2025.2                   # Zonas horarias (requerido por pandas)
+tzdata==2025.2                  # Datos de zonas horarias para sistemas no UNIX
+
+
+################################
+#       Base de Datos         #
+################################
+sqlalchemy==2.0.30             # ORM y herramientas de base de datos
+psycopg2-binary==2.9.9         # Adaptador PostgreSQL
+# alembic==1.13.1             # Migraciones de base de datos (descomentar si se necesita)
+
+
+################################
+#     Procesamiento de Datos  #
+################################
+pandas==2.2.3                  # Manipulación de datos
+numpy==1.26.4                  # Cálculos numéricos
+lttb==0.3.2                    # Downsampling de series temporales
+pendulum                       # Manipulación de fechas y zonas horarias
+
+################################
+#  Configuración y Ambiente   #
+################################
+python-dotenv==1.0.0           # Manejo de variables de entorno desde .env
+pydantic-settings==2.2.1       # Gestión de configuraciones con Pydantic
+
+
+################################
+#     Almacenamiento (S3)     #
+################################
+boto3==1.34.70                 # Cliente AWS S3/MinIO
+# python-minio==7.1.16         # Cliente alternativo para MinIO (descomentar si se prefiere)
+
+
+################################
+#  Dependencias de Runtime    #
+# (Generalmente instaladas    #
+#  automáticamente por otras  #
+#  dependencias)              #
+################################
+annotated-types==0.7.0
+anyio==4.9.0                   # Concurrencia y asincronía
+click==8.1.8                   # Línea de comandos (requerido por uvicorn)
+h11==0.14.0                    # Cliente/servidor HTTP
+idna==3.10                     # Soporte para IDNs
+six==1.17.0                    # Compatibilidad Python 2/3
+sniffio==1.3.1                 # Detección de entorno asíncrono
+typing-inspection==0.4.0
+typing_extensions==4.13.2      # Soporte para tipos extendidos

@@ -1,0 +1,63 @@
+/* frontend/src/App.css */
+
+/* Reseteo básico y fuente base */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #eef2f7; /* Fondo suave general */
+  color: #333; /* Color de texto por defecto */
+}
+
+/* Contenedor principal de la aplicación en index.html o similar */
+#root {
+  /* Mantenemos el padding general, pero quitamos el centrado de texto
+     para que los componentes controlen su alineación */
+  max-width: 1280px;
+  margin: 0 auto; /* Centra el contenido horizontalmente */
+  padding: 2rem; /* Espaciado alrededor del contenido principal */
+  /* text-align: center; <-- Eliminado */
+}
+
+/* Contenedor específico dentro de App.tsx */
+.app-container {
+  width: 100%; /* Ocupa el ancho disponible dentro de #root */
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* Espacio vertical entre secciones (Welcome, Chart, Config) */
+}
+
+/* Estilo general para las "tarjetas" o secciones */
+.card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 25px; /* Un padding consistente para las tarjetas */
+  border: 1px solid #e9ecef; /* Borde sutil opcional */
+}
+
+/* Separador visual entre secciones */
+.divider {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+    margin: 10px 0; /* Ajusta el espacio vertical del separador */
+}
+
+/* Footer */
+.app-footer {
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px solid #dee2e6; /* Línea superior para el footer */
+    text-align: center;
+    font-size: 0.85em;
+    color: #6c757d;
+}
+
+
+/* --- Estilos Eliminados (ya no se usan en App.tsx) --- */
+/*
+.logo

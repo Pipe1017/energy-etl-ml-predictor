@@ -1,0 +1,21 @@
+/* src/components/Configuration.css */
+.configuration-section {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f8f9fa; /* Un fondo ligeramente diferente */
+    border: 1px solid #e9ecef;
+  }
+  
+  .configuration-section h3 {
+    margin-top: 0;
+    color: #495057;
+  }
+  
+  .config-option {
+      margin-top: 15px;
+      opacity: 0.6; /* Para indicar que está desactivado */
+  }
+  
+  .config-option label {
+      margin-right: 10px;
+  }

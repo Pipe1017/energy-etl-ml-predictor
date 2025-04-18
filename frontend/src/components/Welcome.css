@@ -1,0 +1,41 @@
+/* src/components/Welcome.css */
+.welcome-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    text-align: left; /* O center, según prefieras */
+  }
+  
+  .welcome-section h2 {
+    margin-top: 0;
+    color: #333; /* O el color de tu tema */
+  }
+  
+  .welcome-section .subtitle {
+    font-size: 1.1em;
+    color: #555;
+    margin-top: -10px;
+    margin-bottom: 15px;
+  }
+  
+  .welcome-section hr {
+      border: 0;
+      height: 1px;
+      background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+      margin-bottom: 20px;
+  }
+  
+  .welcome-section .date-info {
+      font-size: 0.9em;
+      color: #777;
+      text-align: right; /* Alinea la fecha a la derecha */
+      margin-top: 15px;
+  }
+  
+  /* Asumiendo que tienes una clase .card global */
+  .card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px; /* Espacio entre cards */
+  }

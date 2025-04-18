@@ -1,0 +1,24 @@
+# Airflow Providers
+apache-airflow-providers-postgres
+apache-airflow-providers-amazon
+
+# Base de Datos
+psycopg2-binary # O psycopg2 si tienes las herramientas de build
+
+# Data Handling & ML
+pandas
+numpy # Aunque scikit-learn lo incluye, es bueno ser explícito
+scikit-learn # Para cargar scalers .joblib y dependencias (incluye joblib y numpy)
+tensorflow # Incluye Keras (tf.keras)
+
+# Date/Time
+pendulum # Usado en db_operations_prediction.py
+
+
+ pydataxm
+ workalendar
+
+
+ #boto3 (viene con provider amazon)
+ #keras (viene con tensorflow)
+ #joblib (viene con scikit-learn)

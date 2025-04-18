@@ -1,0 +1,122 @@
+# .gitignore Mejorado
+
+# ───────────────────────────────
+# 1) Archivos de entorno/credenciales
+# ───────────────────────────────
+# Nunca versionar secretos o configuraciones específicas del entorno.
+.env
+.env.*
+*.env
+
+# ───────────────────────────────
+# 2) Node.js / React / Vite
+# ───────────────────────────────
+# Dependencias de Node (muy pesadas)
+node_modules/
+
+# Archivos de build/distribución generados
+dist/
+build/
+.vite/
+
+# Logs y archivos de depuración
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log # Regla más genérica para logs, puede aplicar a Node u otros
+
+# ───────────────────────────────
+# 3) Python / FastAPI
+# ───────────────────────────────
+# Cache de bytecode y archivos compilados
+__pycache__/
+*.py[cod]
+
+# Archivos de distribución y empaquetado
+*.egg-info/
+*.so
+dist/ # Relevante si usas setuptools/build para crear paquetes
+build/ # Relevante si usas setuptools/build
+
+# Logs (puede haber solapamiento con la sección de Node, no hay problema)
+*.log
+
+# Bases de datos locales (generalmente no se versionan)
+*.sqlite3
+*.db
+*.[sS][qQ][lL][iI][tT][eE] # Más robusto para diferentes capitalizaciones
+
+# Entornos virtuales (¡esenciales para ignorar!)
+.venv/
+venv/
+env/
+entorno_jupyter/ # Tu entorno específico
+
+# Modelos, artefactos y datos de ML/DL (¡CAUSA COMÚN DE PESO ALTO!)
+# Estos archivos suelen ser grandes y/o deben generarse mediante código.
+# Asegúrate de que tu README explique cómo obtenerlos o generarlos.
+*.h5
+*.keras # <--- ¡Añadido basado en tu tree!
+*.onnx
+*.pkl
+*.pickle
+*.joblib
+*.pt
+*.pth
+*.ckpt
+*.tflite
+*.pb # TensorFlow SavedModel / GraphDef
+assets/ # Directorio común para modelos TF SavedModel
+*/trained_model/ # Ignorar explícitamente el directorio si NADA dentro debe ser versionado
+*/scalers/      # Ignorar explícitamente el directorio si NADA dentro debe ser versionado
+# Descomenta si tienes archivos de datos grandes que no deben versionarse
+# data/raw/
+# data/processed/
+# *.csv # ¡Cuidado! Ignora solo si son datasets muy grandes o generados
+
+# Cache y checkpoints de Jupyter Notebooks
+.ipynb_checkpoints/
+
+# ───────────────────────────────
+# 4) Airflow / Astronomer (si los usas)
+# ───────────────────────────────
+airflow/logs/
+airflow/db.sqlite3
+.airflow/
+.astro/
+.astroignore
+dags/__pycache__/
+plugins/__pycache__/
+entorno_jupyter/
+
+# ───────────────────────────────
+# 5) Docker
+# ───────────────────────────────
+# Overrides locales de Docker Compose
+docker-compose.override.yml
+
+# Archivos de estado y datos de contenedores (ej. volumen MinIO)
+*.pid
+*.tar
+**/minio_data/
+
+# ───────────────────────────────
+# 6) IDE/Editor
+# ───────────────────────────────
+# Configuraciones específicas del usuario/workspace
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# ───────────────────────────────
+# 7) Otros temporales
+# ───────────────────────────────
+*.swp
+*.swo
+*~
+tmp/
